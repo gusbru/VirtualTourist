@@ -7,14 +7,16 @@
 //
 
 import UIKit
+import MapKit
 
-class ViewController: UIViewController {
+class LocationsMapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognizerDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
     }
-
+    
+    
 
 }
 
