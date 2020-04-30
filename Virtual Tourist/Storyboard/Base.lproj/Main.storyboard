@@ -11,11 +11,13 @@
         <!--Navigation Controller-->
         <scene sceneID="M3I-Rl-viS">
             <objects>
-                <navigationController navigationBarHidden="YES" id="NkQ-cU-UOg" sceneMemberID="viewController">
+                <navigationController toolbarHidden="NO" id="NkQ-cU-UOg" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="wio-YA-aej">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="biz-s9-74b">
+                        <rect key="frame" x="0.0" y="813" width="414" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </toolbar>
                     <connections>
@@ -35,7 +37,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="l7R-Rm-mA5">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <rect key="frame" x="0.0" y="44" width="414" height="852"/>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
@@ -43,11 +45,14 @@
                             <constraint firstItem="l7R-Rm-mA5" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="L8Y-l7-ykS"/>
                             <constraint firstItem="l7R-Rm-mA5" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="-44" id="PHY-po-NlW"/>
                             <constraint firstItem="l7R-Rm-mA5" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="ePg-eN-S0s"/>
-                            <constraint firstItem="l7R-Rm-mA5" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" constant="34" id="g7Z-gC-gRA"/>
+                            <constraint firstItem="l7R-Rm-mA5" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" constant="83" id="g7Z-gC-gRA"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" id="Hp1-il-0G0"/>
+                    <connections>
+                        <outlet property="mapView" destination="l7R-Rm-mA5" id="ybH-c3-lg8"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
@@ -56,7 +61,7 @@
         <!--Photo Album View Controller-->
         <scene sceneID="MZw-fQ-pn0">
             <objects>
-                <viewController id="4vv-V9-ioR" customClass="PhotoAlbumViewController" customModule="Virtual_Tourist" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PhotoAlbumViewController" id="4vv-V9-ioR" customClass="PhotoAlbumViewController" customModule="Virtual_Tourist" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="TVR-LM-2MP">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

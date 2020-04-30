@@ -14,6 +14,12 @@ class PhotoAlbumViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+//        print("photo album tool bar = \(navigationController?.toolbar.items?.count)")
+        
+        let button = UIBarButtonItem(title: "New Collection", style: .plain, target: self, action: nil)
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
+        
+        setToolbarItems([flexibleSpace, button, flexibleSpace], animated: true)
     }
     
 
