@@ -14,6 +14,16 @@ class LocationsMapViewController: UIViewController, MKMapViewDelegate, UIGesture
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        
+        PhotoAlbumClient.getPhotos(latitude: 0, longitude: 0) { (response, error) in
+            if let response = response {
+                print(response)
+            }
+            
+            if let error = error {
+                print(error)
+            }
+        }
     }
     
     
