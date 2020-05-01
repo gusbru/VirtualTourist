@@ -18,6 +18,8 @@
 		75310739245A3C0B0079EFDF /* PhotoAlbumClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75310738245A3C0B0079EFDF /* PhotoAlbumClient.swift */; };
 		7531073D245A55BB0079EFDF /* PhotosResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7531073C245A55BB0079EFDF /* PhotosResponse.swift */; };
 		7531073F245A5A4B0079EFDF /* ErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7531073E245A5A4B0079EFDF /* ErrorResponse.swift */; };
+		75310741245C71F20079EFDF /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75310740245C71F20079EFDF /* DataController.swift */; };
+		75310746245C88C50079EFDF /* PhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75310745245C88C50079EFDF /* PhotoCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +36,8 @@
 		75310738245A3C0B0079EFDF /* PhotoAlbumClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAlbumClient.swift; sourceTree = "<group>"; };
 		7531073C245A55BB0079EFDF /* PhotosResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosResponse.swift; sourceTree = "<group>"; };
 		7531073E245A5A4B0079EFDF /* ErrorResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorResponse.swift; sourceTree = "<group>"; };
+		75310740245C71F20079EFDF /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
+		75310745245C88C50079EFDF /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +88,7 @@
 				7531073A245A555F0079EFDF /* Response */,
 				75310737245A3BBD0079EFDF /* Data */,
 				75310723245A178A0079EFDF /* Virtual_Tourist.xcdatamodeld */,
+				75310740245C71F20079EFDF /* DataController.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -91,6 +96,7 @@
 		75310732245A190D0079EFDF /* View */ = {
 			isa = PBXGroup;
 			children = (
+				75310744245C88AA0079EFDF /* Cell */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -128,6 +134,14 @@
 				7531073E245A5A4B0079EFDF /* ErrorResponse.swift */,
 			);
 			path = Response;
+			sourceTree = "<group>";
+		};
+		75310744245C88AA0079EFDF /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				75310745245C88C50079EFDF /* PhotoCollectionViewCell.swift */,
+			);
+			path = Cell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -205,9 +219,11 @@
 				7531071F245A178A0079EFDF /* LocationsMapViewController.swift in Sources */,
 				7531071B245A178A0079EFDF /* AppDelegate.swift in Sources */,
 				75310736245A1CD00079EFDF /* PhotoAlbumViewController.swift in Sources */,
+				75310741245C71F20079EFDF /* DataController.swift in Sources */,
 				7531071D245A178A0079EFDF /* SceneDelegate.swift in Sources */,
 				7531073D245A55BB0079EFDF /* PhotosResponse.swift in Sources */,
 				75310739245A3C0B0079EFDF /* PhotoAlbumClient.swift in Sources */,
+				75310746245C88C50079EFDF /* PhotoCollectionViewCell.swift in Sources */,
 				7531073F245A5A4B0079EFDF /* ErrorResponse.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
