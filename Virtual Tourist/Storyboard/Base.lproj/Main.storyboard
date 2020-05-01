@@ -101,6 +101,9 @@
                                                     </constraints>
                                                 </collectionViewCellContentView>
                                                 <size key="customSize" width="88" height="88"/>
+                                                <connections>
+                                                    <outlet property="photoImageView" destination="T9p-gD-Lmu" id="HnH-Z4-qQC"/>
+                                                </connections>
                                             </collectionViewCell>
                                         </cells>
                                     </collectionView>

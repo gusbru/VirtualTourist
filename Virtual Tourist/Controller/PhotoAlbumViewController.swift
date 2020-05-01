@@ -12,6 +12,7 @@ import MapKit
 class PhotoAlbumViewController: UIViewController {
     
     let reuseIdentifier = "Cell"
+    
     @IBOutlet weak var photosCollectionView: UICollectionView!
     @IBOutlet weak var mapView: MKMapView!
     
@@ -33,6 +34,18 @@ class PhotoAlbumViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+    }
+    
+    fileprivate func fetchPhotos() {
+        PhotoAlbumClient.getPhotos(latitude: 0, longitude: 0) { (response, error) in
+            if let response = response {
+                print(response)
+            }
+            
+            if let error = error {
+                print(error)
+            }
+        }
     }
     
     
