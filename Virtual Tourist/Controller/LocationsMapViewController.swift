@@ -123,8 +123,10 @@ extension LocationsMapViewController: MKMapViewDelegate, UIGestureRecognizerDele
         photoAlbumViewControl.pinAnnotation = view.annotation
         photoAlbumViewControl.dataController = dataController
         
+        let currentPin = view.annotation as! PinLocation
+        
         for pin in fetchResultsController.fetchedObjects! {
-            if (pin.latitude == view.annotation?.coordinate.latitude && pin.longitude == view.annotation?.coordinate.longitude) {
+            if (pin.objectID.isEqual(currentPin.pinId)) {
                 photoAlbumViewControl.pin = pin
                 navigationController?.pushViewController(photoAlbumViewControl, animated: true)
                 return
@@ -155,8 +157,10 @@ extension LocationsMapViewController: MKMapViewDelegate, UIGestureRecognizerDele
         let latitude = CLLocationDegrees(exactly: pin.latitude)!
         let longitude = CLLocationDegrees(exactly: pin.longitude)!
         let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-        let annotation = MKPointAnnotation()
+
+        let annotation = PinLocation()
         annotation.coordinate = coordinate
+        annotation.pinId = pin.objectID
     
         mapView.addAnnotation(annotation)
         
