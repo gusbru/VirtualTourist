@@ -124,11 +124,14 @@ extension LocationsMapViewController: MKMapViewDelegate, UIGestureRecognizerDele
         for pin in fetchResultsController.fetchedObjects! {
             if (pin.latitude == view.annotation?.coordinate.latitude && pin.longitude == view.annotation?.coordinate.longitude) {
                 photoAlbumViewControl.pin = pin
+                navigationController?.pushViewController(photoAlbumViewControl, animated: true)
+                return
             }
         }
         
+        // TODO: error... pin not found on data store
+        print("pin not found!!!!!!")
         
-        navigationController?.pushViewController(photoAlbumViewControl, animated: true)
     }
     
     func mapViewDidFinishLoadingMap(_ mapView: MKMapView) {
