@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreData
 
-class LocationsMapViewController: UIViewController, NSFetchedResultsControllerDelegate {
+class LocationsMapViewController: UIViewController {
     
     var dataController: NSPersistentContainer!
     var fetchResultsController: NSFetchedResultsController<Pin>!
@@ -60,7 +60,7 @@ class LocationsMapViewController: UIViewController, NSFetchedResultsControllerDe
         let sortDescriptor = NSSortDescriptor(key: "latitude", ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
         
-        fetchResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: "pin")
+        fetchResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
 
         fetchResultsController.delegate = self
         
@@ -77,10 +77,12 @@ class LocationsMapViewController: UIViewController, NSFetchedResultsControllerDe
         pin.latitude = latitude
         pin.longitude = longitude
         
+        
         do {
             try dataController.viewContext.save()
         } catch {
             // TODO: Show error
+            print("error saving pin")
             print(error.localizedDescription)
         }
     }
@@ -142,28 +144,22 @@ extension LocationsMapViewController: MKMapViewDelegate, UIGestureRecognizerDele
         // load annotations saved on disk
         if let pinList = fetchResultsController.fetchedObjects {
             for pin in pinList {
-                if let coordinate = generateCoordinate(latitude: pin.latitude, longitude: pin.longitude) {
-                    addNewAnnotation(coordinate: coordinate)
-                }
+                addNewAnnotation(pin: pin)
             }
         }
         
     }
     
-    func addNewAnnotation(coordinate: CLLocationCoordinate2D) {
+    func addNewAnnotation(pin: Pin) {
 
+        let latitude = CLLocationDegrees(exactly: pin.latitude)!
+        let longitude = CLLocationDegrees(exactly: pin.longitude)!
+        let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
         let annotation = MKPointAnnotation()
         annotation.coordinate = coordinate
     
         mapView.addAnnotation(annotation)
         
-    }
-    
-    func generateCoordinate(latitude: Double, longitude: Double) -> CLLocationCoordinate2D? {
-        guard let latitude = CLLocationDegrees(exactly: latitude) else { return nil }
-        guard let longitude = CLLocationDegrees(exactly: longitude) else { return nil }
-        
-        return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
     
     // MARK: - Gestures
@@ -174,14 +170,34 @@ extension LocationsMapViewController: MKMapViewDelegate, UIGestureRecognizerDele
             let location = gestureRecognizer.location(in: mapView)
             let coordinate = mapView.convert(location, toCoordinateFrom: mapView)
             
-            // Add annotation:
-            addNewAnnotation(coordinate: coordinate)
-            
             // save to data persistence
             saveNewPin(latitude: coordinate.latitude, longitude: coordinate.longitude)
             
         }
         
         
+    }
+}
+
+// MARK: - Extension
+extension LocationsMapViewController: NSFetchedResultsControllerDelegate {
+    
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        print("prepare for change")
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        switch type {
+        case .insert:
+            if let pin = anObject as? Pin {
+                addNewAnnotation(pin: pin)
+            }
+        default:
+            break
+        }
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        print("a change was made")
     }
 }
