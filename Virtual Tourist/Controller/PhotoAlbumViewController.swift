@@ -10,12 +10,12 @@ import UIKit
 import MapKit
 import CoreData
 
-class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDelegate {
+class PhotoAlbumViewController: UIViewController {
     
     private let reuseIdentifier = "Cell"
     var pinAnnotation: MKAnnotation?
     var dataController: NSPersistentContainer!
-    var fetchResultsController: NSFetchedResultsController<Photo>?
+    var fetchResultsController: NSFetchedResultsController<Photo>!
     var pin: Pin?
     
     @IBOutlet weak var photosCollectionView: UICollectionView!
@@ -101,13 +101,13 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
     // MARK: UICollectionViewDataSource
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
+        return fetchResultsController.sections?.count ?? 1
     }
 
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return 6
+        return fetchResultsController.sections?[section].numberOfObjects ?? 0
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -132,5 +132,41 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
 extension PhotoAlbumViewController: MKMapViewDelegate {
     func mapViewWillStartLoadingMap(_ mapView: MKMapView) {
         print("map")
+    }
+    
+    func mapViewDidFinishLoadingMap(_ mapView: MKMapView) {
+        print("map did finish load")
+        if let pinAnnotation = pinAnnotation{
+            mapView.addAnnotation(pinAnnotation)
+            let coordinateRegion = MKCoordinateRegion(center: pinAnnotation.coordinate, latitudinalMeters: CLLocationDistance(exactly: 2000)!, longitudinalMeters: CLLocationDistance(exactly: 2000)!)
+            mapView.setRegion(coordinateRegion, animated: false)
+        }
+    }
+    
+    
+}
+
+
+// MARK:- Fetch Result Controller
+extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        switch type {
+        case .insert:
+            break
+        case .update:
+            break
+        case .delete:
+            break
+        default:
+            break
+        }
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        
     }
 }

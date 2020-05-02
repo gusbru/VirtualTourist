@@ -124,9 +124,9 @@ extension LocationsMapViewController: MKMapViewDelegate, UIGestureRecognizerDele
         photoAlbumViewControl.pinAnnotation = view.annotation
         photoAlbumViewControl.dataController = dataController
         
+        
         let currentPin = view.annotation as! PinLocation
-        print("number of pins = \(fetchResultsController.fetchedObjects!.count)")
-        print(fetchResultsController.fetchedObjects!)
+        
         
         for pin in fetchResultsController.fetchedObjects! {
             if (pin.pinId == currentPin.pinId) {
