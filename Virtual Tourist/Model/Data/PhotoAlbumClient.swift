@@ -18,12 +18,12 @@ class PhotoAlbumClient {
             case search = "flickr.photos.search"
         }
         
-        case getPhotoByGeo(latitude: Double, longitude: Double, numberOfPhotos: Int)
+        case getPhotoByGeo(latitude: Double, longitude: Double, numberOfPhotos: Int, page: Int)
         
         var stringVaue: String {
         switch self {
-        case .getPhotoByGeo(latitude: let latitude, longitude: let longitude, numberOfPhotos: let numberOfPhotos):
-            return "\(Endpoints.base)?method=\(FlickrMethods.search.rawValue)&api_key=\(Endpoints.flickrAPIKey)&lat=\(latitude)&lon=\(longitude)&per_page=\(numberOfPhotos)&format=json&nojsoncallback=1"
+        case .getPhotoByGeo(latitude: let latitude, longitude: let longitude, numberOfPhotos: let numberOfPhotos, page: let page):
+            return "\(Endpoints.base)?method=\(FlickrMethods.search.rawValue)&api_key=\(Endpoints.flickrAPIKey)&lat=\(latitude)&lon=\(longitude)&page=\(page)&per_page=\(numberOfPhotos)&format=json&nojsoncallback=1"
             }
         }
         
@@ -34,8 +34,9 @@ class PhotoAlbumClient {
     }
     
     // MARK: - GET METHODS
-    class func getPhotos(latitude: Double, longitude: Double, completion: @escaping (PhotoResponse?, Error?) -> Void) {
-        taskForGETRequest(url: Endpoints.getPhotoByGeo(latitude: latitude, longitude: longitude, numberOfPhotos: 10).url, ResponseType: PhotoResponse.self) { (response, error) in
+    class func getPhotos(latitude: Double, longitude: Double, page: Int = 1, numberOfPhotos: Int = 10, completion: @escaping (PhotoResponse?, Error?) -> Void) {
+        taskForGETRequest(url: Endpoints.getPhotoByGeo(latitude: latitude, longitude: longitude, numberOfPhotos: numberOfPhotos, page: page).url, ResponseType: PhotoResponse.self) { (response, error) in
+            
             if let response = response {
                 completion(response, nil)
             }

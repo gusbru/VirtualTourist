@@ -84,11 +84,18 @@ class LocationsMapViewController: UIViewController, NSFetchedResultsControllerDe
             print(error.localizedDescription)
         }
     }
+    
+    // ----------------------------------------------------------------------------
+    // MARK:- Navigation
+    
+    
 
 }
 
+
+// ----------------------------------------------------------------------------
+// MARK: - MapView
 extension LocationsMapViewController: MKMapViewDelegate, UIGestureRecognizerDelegate {
-    // MARK: - MapView
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         let reuseId = "pin"
@@ -108,12 +115,28 @@ extension LocationsMapViewController: MKMapViewDelegate, UIGestureRecognizerDele
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        let photoAlbumViewControll = self.storyboard?.instantiateViewController(withIdentifier: "PhotoAlbumViewController") as! PhotoAlbumViewController
-        navigationController?.pushViewController(photoAlbumViewControll, animated: true)
+        let photoAlbumViewControl = self.storyboard?.instantiateViewController(withIdentifier: "PhotoAlbumViewController") as! PhotoAlbumViewController
+        
+        
+        photoAlbumViewControl.pinAnnotation = view.annotation
+        photoAlbumViewControl.dataController = dataController
+        
+        for pin in fetchResultsController.fetchedObjects! {
+            if (pin.latitude == view.annotation?.coordinate.latitude && pin.longitude == view.annotation?.coordinate.longitude) {
+                photoAlbumViewControl.pin = pin
+            }
+        }
+        
+        
+        navigationController?.pushViewController(photoAlbumViewControl, animated: true)
     }
     
     func mapViewDidFinishLoadingMap(_ mapView: MKMapView) {
-        print("finish load map: \(fetchResultsController.fetchedObjects?.count ?? -1)")
+        
+        // clean the map annotations (if any)
+        mapView.addAnnotations(mapView.annotations)
+        
+        // load annotations saved on disk
         if let pinList = fetchResultsController.fetchedObjects {
             for pin in pinList {
                 if let coordinate = generateCoordinate(latitude: pin.latitude, longitude: pin.longitude) {
@@ -154,11 +177,6 @@ extension LocationsMapViewController: MKMapViewDelegate, UIGestureRecognizerDele
             // save to data persistence
             saveNewPin(latitude: coordinate.latitude, longitude: coordinate.longitude)
             
-            print("loooong tap")
-            print(coordinate.latitude)
-            print(coordinate.longitude)
-            print(mapView.annotations.count)
-            print("-----------")
         }
         
         
