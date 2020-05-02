@@ -11,5 +11,5 @@ import MapKit
 import CoreData
 
 class PinLocation: MKPointAnnotation {
-    var pinId: NSManagedObjectID?
+    var pinId: UUID?
 }

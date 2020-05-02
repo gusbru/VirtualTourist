@@ -76,6 +76,7 @@ class LocationsMapViewController: UIViewController {
         let pin = Pin(context: dataController.viewContext)
         pin.latitude = latitude
         pin.longitude = longitude
+        pin.pinId = UUID()
         
         
         do {
@@ -124,9 +125,11 @@ extension LocationsMapViewController: MKMapViewDelegate, UIGestureRecognizerDele
         photoAlbumViewControl.dataController = dataController
         
         let currentPin = view.annotation as! PinLocation
+        print("number of pins = \(fetchResultsController.fetchedObjects!.count)")
+        print(fetchResultsController.fetchedObjects!)
         
         for pin in fetchResultsController.fetchedObjects! {
-            if (pin.objectID.isEqual(currentPin.pinId)) {
+            if (pin.pinId == currentPin.pinId) {
                 photoAlbumViewControl.pin = pin
                 navigationController?.pushViewController(photoAlbumViewControl, animated: true)
                 return
@@ -139,7 +142,7 @@ extension LocationsMapViewController: MKMapViewDelegate, UIGestureRecognizerDele
     }
     
     func mapViewDidFinishLoadingMap(_ mapView: MKMapView) {
-        
+        print("mapViewDidFinishLoadingMap")
         // clean the map annotations (if any)
         mapView.addAnnotations(mapView.annotations)
         
@@ -160,7 +163,7 @@ extension LocationsMapViewController: MKMapViewDelegate, UIGestureRecognizerDele
 
         let annotation = PinLocation()
         annotation.coordinate = coordinate
-        annotation.pinId = pin.objectID
+        annotation.pinId = pin.pinId
     
         mapView.addAnnotation(annotation)
         
