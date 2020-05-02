@@ -28,11 +28,20 @@ class PhotoAlbumViewController: UIViewController {
         setupDelegate()
         setupToolBar()
         
+        
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupFetchResultController()
+        
+        if let photos = fetchResultsController.fetchedObjects {
+            if photos.count == 0 {
+                print("fetch from web!")
+                fetchPhotosFromWeb()
+            }
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
