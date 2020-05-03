@@ -111,7 +111,7 @@ class PhotoAlbumViewController: UIViewController {
 
 }
 
-// MARK: - Collection View
+// MARK: - Collection View Delegate
 extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     
     // MARK: UICollectionViewDataSource
@@ -149,10 +149,9 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
         return cell
     }
     
-    // MARK: UICollectionViewDelegate
-    
     // Uncomment this method to specify if the specified item should be selected
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        print("delete item at \(indexPath)")
         return true
     }
 }
@@ -179,9 +178,6 @@ extension PhotoAlbumViewController: MKMapViewDelegate {
 
 // MARK:- Fetch Result Controller
 extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate {
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        
-    }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         switch type {
