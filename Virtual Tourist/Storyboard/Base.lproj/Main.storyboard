@@ -70,9 +70,8 @@
                                 <rect key="frame" x="0.0" y="320" width="414" height="576"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="52u-iS-sIZ">
+                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="52u-iS-sIZ">
                                     <size key="itemSize" width="120" height="120"/>
-                                    <size key="estimatedItemSize" width="120" height="120"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
@@ -85,7 +84,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ubi-9Q-5co">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="VirtualTourist_120" translatesAutoresizingMaskIntoConstraints="NO" id="Ubi-9Q-5co">
                                                     <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
                                                 </imageView>
                                             </subviews>
@@ -96,6 +95,7 @@
                                                 <constraint firstItem="Ubi-9Q-5co" firstAttribute="leading" secondItem="t5B-pC-SL8" secondAttribute="leading" id="g29-gf-32R"/>
                                             </constraints>
                                         </collectionViewCellContentView>
+                                        <size key="customSize" width="120" height="120"/>
                                         <connections>
                                             <outlet property="photoImageView" destination="Ubi-9Q-5co" id="2NJ-mt-Nzp"/>
                                         </connections>
@@ -120,4 +120,7 @@
             <point key="canvasLocation" x="982.60869565217399" y="126.5625"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="VirtualTourist_120" width="120" height="120"/>
+    </resources>
 </document>

@@ -19,7 +19,7 @@ class PhotoAlbumViewController: UIViewController {
     var pin: Pin?
     
     // tmp
-    var photosList: [FlickrPhoto?] = []
+//    var photosList: [FlickrPhoto?] = []
     
     @IBOutlet weak var photosCollectionView: UICollectionView!
     @IBOutlet weak var mapView: MKMapView!
@@ -43,6 +43,8 @@ class PhotoAlbumViewController: UIViewController {
             if photos.count == 0 {
                 print("fetch from web!")
                 fetchPhotosFromWeb()
+            } else {
+                print("using data store")
             }
         }
     }
@@ -60,9 +62,31 @@ class PhotoAlbumViewController: UIViewController {
             if let response = response {
 //                print(response.photos.photo)
                 
-                self.photosList.append(contentsOf: response.photos.photo)
-                print("my photos = \(self.photosList)")
-                self.photosCollectionView.reloadData()
+                let photosArray = response.photos.photo
+                for p in photosArray {
+                    guard let p = p else { return }
+                    let farmId = p.farm
+                    let id = p.id
+                    let serverId = p.server
+                    let secret = p.secret
+                    let url = PhotoAlbumClient.Endpoints.downloadImage(farmId: farmId, serverId: serverId, id: id, secret: secret).url
+                    
+                    PhotoAlbumClient.downloadImage(url: url) { (imgData, error) in
+                        if let imgData = imgData {
+                            let newPhoto = Photo(context: self.dataController.viewContext)
+                            newPhoto.url = url
+                            newPhoto.imageSrc = imgData
+                            newPhoto.pin = self.pin
+                            
+                            do {
+                                try self.dataController.viewContext.save()
+                            } catch {
+                                print("error saving image")
+                            }
+                        }
+                    }
+                }
+                
             }
             
             if let error = error {
@@ -74,15 +98,31 @@ class PhotoAlbumViewController: UIViewController {
     fileprivate func setupDelegate() {
         // Do any additional setup after loading the view.
         photosCollectionView.delegate = self
-        photosCollectionView.dataSource = self
         mapView.delegate = self
+        
+        photosCollectionView.dataSource = self
     }
     
     fileprivate func setupToolBar() {
         let button = UIBarButtonItem(title: "New Collection", style: .plain, target: self, action: nil)
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
         
+        button.action = #selector(testFetchData)
+        
         setToolbarItems([flexibleSpace, button, flexibleSpace], animated: true)
+    }
+    
+    @objc func testFetchData() {
+        print("click")
+        let p = Photo(context: dataController.viewContext)
+        p.url = URL(string: "http://www.example.com")
+        p.pin = pin
+        
+        do {
+            try dataController.viewContext.save()
+        } catch {
+            print("error saving \(error.localizedDescription)")
+        }
     }
     
     // -------------------------------------------
@@ -117,25 +157,25 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
     // MARK: UICollectionViewDataSource
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-//        return fetchResultsController.sections?.count ?? 1
-        return 1
+        return fetchResultsController.sections?.count ?? 1
+//        return 1
     }
 
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-//        return fetchResultsController.sections?[section].numberOfObjects ?? 0
-        print("number of photos = \(photosList.count)")
-        return photosList.count
+        return fetchResultsController.sections?[section].numberOfObjects ?? 0
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = photosCollectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! PhotoCollectionViewCell
         
+        /*
         let farmId = photosList[indexPath.row]!.farm
         let serverId = photosList[indexPath.row]!.server
         let id = photosList[indexPath.row]!.id
         let secret = photosList[indexPath.row]!.secret
+        
     
         // Configure the cell
 //        cell.photoImageView.image = #imageLiteral(resourceName: "VirtualTourist_120")
@@ -145,6 +185,13 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
             
             cell.setNeedsLayout()
         }
+        */
+//        cell.setNeedsLayout()
+        
+        if let data = fetchResultsController.object(at: indexPath).imageSrc {
+//            cell.photoImageView.image = UIImage(data: data)
+            cell.setNeedsLayout()
+        }
     
         return cell
     }
@@ -152,8 +199,18 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
     // Uncomment this method to specify if the specified item should be selected
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         print("delete item at \(indexPath)")
+        let photoToDelete = fetchResultsController.object(at: indexPath)
+        dataController.viewContext.delete(photoToDelete)
+        do {
+            try dataController.viewContext.save()
+        } catch {
+            print(error.localizedDescription)
+        }
+        
         return true
     }
+    
+    
 }
 
 
@@ -179,15 +236,22 @@ extension PhotoAlbumViewController: MKMapViewDelegate {
 // MARK:- Fetch Result Controller
 extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate {
     
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        print("controllerWillChangeContent")
+    }
+    
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         switch type {
         case .insert:
+            print("insert")
             photosCollectionView.insertItems(at: [newIndexPath!])
             break
         case .update:
+            print("update")
             photosCollectionView.reloadItems(at: [indexPath!])
             break
         case .delete:
+            print("delete")
             photosCollectionView.deleteItems(at: [indexPath!])
             break
         default:
@@ -196,6 +260,6 @@ extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        
+        print("controllerDidChangeContent")
     }
 }

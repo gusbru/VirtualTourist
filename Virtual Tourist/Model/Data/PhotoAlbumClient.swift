@@ -60,6 +60,14 @@ class PhotoAlbumClient {
         task.resume()
     }
     
+    class func downloadImage(url: URL, completion: @escaping (Data?, Error?) -> Void) {
+        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+            DispatchQueue.main.async {
+                completion(data, error)
+            }
+        }
+        task.resume()
+    }
     
     
     // MARK:- GET Request
