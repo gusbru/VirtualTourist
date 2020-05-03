@@ -17,9 +17,8 @@ class PhotoAlbumViewController: UIViewController {
     var dataController: NSPersistentContainer!
     var fetchResultsController: NSFetchedResultsController<Photo>!
     var pin: Pin?
+//    var numberOfPages: Int?
     
-    // tmp
-//    var photosList: [FlickrPhoto?] = []
     
     @IBOutlet weak var photosCollectionView: UICollectionView!
     @IBOutlet weak var mapView: MKMapView!
@@ -55,14 +54,41 @@ class PhotoAlbumViewController: UIViewController {
     }
     
     fileprivate func fetchPhotosFromWeb() {
+        
+        
+        getImages()
+    }
+    
+    fileprivate func downloadImage(url: URL) {
+        PhotoAlbumClient.downloadImage(url: url) { (imgData, error) in
+            if let imgData = imgData {
+                let newPhoto = Photo(context: self.dataController.viewContext)
+                newPhoto.url = url
+                newPhoto.imageSrc = imgData
+                newPhoto.pin = self.pin
+                
+                do {
+                    try self.dataController.viewContext.save()
+                } catch {
+                    print("error saving image")
+                }
+            }
+        }
+    }
+    
+    fileprivate func getImages(page: Int = 1) {
         guard let latitude = pinAnnotation?.coordinate.latitude else { return }
         guard let longitude = pinAnnotation?.coordinate.longitude else { return }
         
-        PhotoAlbumClient.getPhotos(latitude: latitude, longitude: longitude) { (response, error) in
+        
+        PhotoAlbumClient.getPhotos(latitude: latitude, longitude: longitude, page: page) { (response, error) in
             if let response = response {
-//                print(response.photos.photo)
                 
                 let photosArray = response.photos.photo
+//                self.numberOfPages = response.photos.pages
+                
+                print("get page \(page) of \(response.photos.pages) number of photos = \(response.photos.perpage)")
+                
                 for p in photosArray {
                     guard let p = p else { return }
                     let farmId = p.farm
@@ -71,20 +97,7 @@ class PhotoAlbumViewController: UIViewController {
                     let secret = p.secret
                     let url = PhotoAlbumClient.Endpoints.downloadImage(farmId: farmId, serverId: serverId, id: id, secret: secret).url
                     
-                    PhotoAlbumClient.downloadImage(url: url) { (imgData, error) in
-                        if let imgData = imgData {
-                            let newPhoto = Photo(context: self.dataController.viewContext)
-                            newPhoto.url = url
-                            newPhoto.imageSrc = imgData
-                            newPhoto.pin = self.pin
-                            
-                            do {
-                                try self.dataController.viewContext.save()
-                            } catch {
-                                print("error saving image")
-                            }
-                        }
-                    }
+                    self.downloadImage(url: url)
                 }
                 
             }
@@ -92,6 +105,14 @@ class PhotoAlbumViewController: UIViewController {
             if let error = error {
                 print(error)
             }
+        }
+    }
+    
+    func clearFetchedImages() {
+        for _ in 1..<(fetchResultsController.sections?[0].numberOfObjects)! {
+            
+            dataController.viewContext.delete(fetchResultsController.object(at: IndexPath(row: 0, section: 0)))
+
         }
     }
     
@@ -113,16 +134,37 @@ class PhotoAlbumViewController: UIViewController {
     }
     
     @objc func testFetchData() {
-        print("click")
-        let p = Photo(context: dataController.viewContext)
-        p.url = URL(string: "http://www.example.com")
-        p.pin = pin
         
-        do {
-            try dataController.viewContext.save()
-        } catch {
-            print("error saving \(error.localizedDescription)")
+        guard let numberOfPages = pin?.numberOfPages else { return }
+        
+        
+        print("numberOfPages = \(numberOfPages)")
+        
+        if numberOfPages == 0 {
+            print("no photos")
+            return
         }
+        
+        let newPage = Int.random(in: 1...Int(numberOfPages))
+        
+        print("click \(newPage)")
+        
+        clearFetchedImages()
+        
+        getImages(page: newPage)
+        
+        
+        
+//        let p = Photo(context: dataController.viewContext)
+//        p.url = URL(string: "http://www.example.com")
+//        p.pin = pin
+//
+//        do {
+//
+//            try dataController.viewContext.save()
+//        } catch {
+//            print("error saving \(error.localizedDescription)")
+//        }
     }
     
     // -------------------------------------------
@@ -170,31 +212,17 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = photosCollectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! PhotoCollectionViewCell
         
-        /*
-        let farmId = photosList[indexPath.row]!.farm
-        let serverId = photosList[indexPath.row]!.server
-        let id = photosList[indexPath.row]!.id
-        let secret = photosList[indexPath.row]!.secret
-        
-    
-        // Configure the cell
-//        cell.photoImageView.image = #imageLiteral(resourceName: "VirtualTourist_120")
-        PhotoAlbumClient.downloadImage(farmId: farmId, serverId: serverId, id: id, secret: secret) { (data, error) in
-            guard let data = data else { return }
-            cell.photoImageView.image = UIImage(data: data)
-            
-            cell.setNeedsLayout()
-        }
-        */
-//        cell.setNeedsLayout()
-        
         if let data = fetchResultsController.object(at: indexPath).imageSrc {
-//            cell.photoImageView.image = UIImage(data: data)
-            cell.setNeedsLayout()
+            cell.photoImageView.image = UIImage(data: data)
+//            cell.setNeedsLayout()
         }
     
         return cell
     }
+    
+    
+    
+    
     
     // Uncomment this method to specify if the specified item should be selected
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {

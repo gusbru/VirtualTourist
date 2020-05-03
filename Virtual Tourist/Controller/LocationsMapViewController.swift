@@ -73,19 +73,27 @@ class LocationsMapViewController: UIViewController {
     }
     
     func saveNewPin(latitude: Double, longitude: Double) {
-        let pin = Pin(context: dataController.viewContext)
-        pin.latitude = latitude
-        pin.longitude = longitude
-        pin.pinId = UUID()
         
-        
-        do {
-            try dataController.viewContext.save()
-        } catch {
-            // TODO: Show error
-            print("error saving pin")
-            print(error.localizedDescription)
+        PhotoAlbumClient.getPhotos(latitude: latitude, longitude: longitude) { (data, error) in
+            if let data = data {
+                let pin = Pin(context: self.dataController.viewContext)
+                pin.latitude = latitude
+                pin.longitude = longitude
+                pin.pinId = UUID()
+                pin.numberOfPages = Int64(data.photos.pages)
+                
+                
+                do {
+                    try self.dataController.viewContext.save()
+                } catch {
+                    // TODO: Show error
+                    print("error saving pin")
+                    print(error.localizedDescription)
+                }
+            }
         }
+        
+        
     }
     
     // ----------------------------------------------------------------------------
