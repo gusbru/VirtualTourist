@@ -182,10 +182,13 @@ extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate {
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         switch type {
         case .insert:
+            photosCollectionView.insertItems(at: [newIndexPath!])
             break
         case .update:
+            photosCollectionView.reloadItems(at: [indexPath!])
             break
         case .delete:
+            photosCollectionView.deleteItems(at: [indexPath!])
             break
         default:
             break
