@@ -18,6 +18,9 @@ class PhotoAlbumViewController: UIViewController {
     var fetchResultsController: NSFetchedResultsController<Photo>!
     var pin: Pin?
     
+    // tmp
+    var photosList: [FlickrPhoto?] = []
+    
     @IBOutlet weak var photosCollectionView: UICollectionView!
     @IBOutlet weak var mapView: MKMapView!
     
@@ -55,7 +58,11 @@ class PhotoAlbumViewController: UIViewController {
         
         PhotoAlbumClient.getPhotos(latitude: latitude, longitude: longitude) { (response, error) in
             if let response = response {
-                print(response)
+//                print(response.photos.photo)
+                
+                self.photosList.append(contentsOf: response.photos.photo)
+                print("my photos = \(self.photosList)")
+                self.photosCollectionView.reloadData()
             }
             
             if let error = error {
@@ -110,20 +117,34 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
     // MARK: UICollectionViewDataSource
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return fetchResultsController.sections?.count ?? 1
+//        return fetchResultsController.sections?.count ?? 1
+        return 1
     }
 
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return fetchResultsController.sections?[section].numberOfObjects ?? 0
+//        return fetchResultsController.sections?[section].numberOfObjects ?? 0
+        print("number of photos = \(photosList.count)")
+        return photosList.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = photosCollectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! PhotoCollectionViewCell
+        
+        let farmId = photosList[indexPath.row]!.farm
+        let serverId = photosList[indexPath.row]!.server
+        let id = photosList[indexPath.row]!.id
+        let secret = photosList[indexPath.row]!.secret
     
         // Configure the cell
 //        cell.photoImageView.image = #imageLiteral(resourceName: "VirtualTourist_120")
+        PhotoAlbumClient.downloadImage(farmId: farmId, serverId: serverId, id: id, secret: secret) { (data, error) in
+            guard let data = data else { return }
+            cell.photoImageView.image = UIImage(data: data)
+            
+            cell.setNeedsLayout()
+        }
     
         return cell
     }

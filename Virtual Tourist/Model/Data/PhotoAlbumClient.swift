@@ -19,12 +19,16 @@ class PhotoAlbumClient {
         }
         
         case getPhotoByGeo(latitude: Double, longitude: Double, numberOfPhotos: Int, page: Int)
+        case downloadImage(farmId: Int, serverId: String, id: String, secret: String)
         
         var stringVaue: String {
         switch self {
         case .getPhotoByGeo(latitude: let latitude, longitude: let longitude, numberOfPhotos: let numberOfPhotos, page: let page):
             return "\(Endpoints.base)?method=\(FlickrMethods.search.rawValue)&api_key=\(Endpoints.flickrAPIKey)&lat=\(latitude)&lon=\(longitude)&page=\(page)&per_page=\(numberOfPhotos)&format=json&nojsoncallback=1"
+        case .downloadImage(farmId: let farmId, serverId: let serverId, id: let id, secret: let secret):
+            return "https://farm\(farmId).staticflickr.com/\(serverId)/\(id)_\(secret).jpg"
             }
+        
         }
         
         var url: URL {
@@ -45,6 +49,15 @@ class PhotoAlbumClient {
                 completion(nil, error)
             }
         }
+    }
+    
+    class func downloadImage(farmId: Int, serverId: String, id: String, secret: String, completion: @escaping (Data?, Error?) -> Void) {
+        let task = URLSession.shared.dataTask(with: Endpoints.downloadImage(farmId: farmId, serverId: serverId, id: id, secret: secret).url) { (data, response, error) in
+            DispatchQueue.main.async {
+                completion(data, error)
+            }
+        }
+        task.resume()
     }
     
     
