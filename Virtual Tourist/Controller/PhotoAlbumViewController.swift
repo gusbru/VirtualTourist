@@ -109,11 +109,19 @@ class PhotoAlbumViewController: UIViewController {
     }
     
     func clearFetchedImages() {
-        for _ in 1..<(fetchResultsController.sections?[0].numberOfObjects)! {
-            
-            dataController.viewContext.delete(fetchResultsController.object(at: IndexPath(row: 0, section: 0)))
-
+        print("clear fetched images...")
+        
+        if let photosArray = fetchResultsController.fetchedObjects {
+            for photo in photosArray {
+                dataController.viewContext.delete(photo)
+                do {
+                    try dataController.viewContext.save()
+                } catch {
+                    print(error.localizedDescription)
+                }
+            }
         }
+        
     }
     
     fileprivate func setupDelegate() {
@@ -128,12 +136,12 @@ class PhotoAlbumViewController: UIViewController {
         let button = UIBarButtonItem(title: "New Collection", style: .plain, target: self, action: nil)
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
         
-        button.action = #selector(testFetchData)
+        button.action = #selector(fetchData)
         
         setToolbarItems([flexibleSpace, button, flexibleSpace], animated: true)
     }
     
-    @objc func testFetchData() {
+    @objc func fetchData() {
         
         guard let numberOfPages = pin?.numberOfPages else { return }
         
@@ -152,19 +160,8 @@ class PhotoAlbumViewController: UIViewController {
         clearFetchedImages()
         
         getImages(page: newPage)
+        photosCollectionView.reloadData()
         
-        
-        
-//        let p = Photo(context: dataController.viewContext)
-//        p.url = URL(string: "http://www.example.com")
-//        p.pin = pin
-//
-//        do {
-//
-//            try dataController.viewContext.save()
-//        } catch {
-//            print("error saving \(error.localizedDescription)")
-//        }
     }
     
     // -------------------------------------------
@@ -200,7 +197,6 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return fetchResultsController.sections?.count ?? 1
-//        return 1
     }
 
 
