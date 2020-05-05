@@ -84,16 +84,11 @@
                                             <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="VirtualTourist_120" translatesAutoresizingMaskIntoConstraints="NO" id="Ubi-9Q-5co">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="VirtualTourist_120" translatesAutoresizingMaskIntoConstraints="NO" id="Ubi-9Q-5co">
                                                     <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
                                             </subviews>
-                                            <constraints>
-                                                <constraint firstItem="Ubi-9Q-5co" firstAttribute="top" secondItem="t5B-pC-SL8" secondAttribute="top" id="Kyc-eQ-yRk"/>
-                                                <constraint firstAttribute="trailing" secondItem="Ubi-9Q-5co" secondAttribute="trailing" id="RDR-dT-XKG"/>
-                                                <constraint firstAttribute="bottom" secondItem="Ubi-9Q-5co" secondAttribute="bottom" id="ZZa-V4-NO8"/>
-                                                <constraint firstItem="Ubi-9Q-5co" firstAttribute="leading" secondItem="t5B-pC-SL8" secondAttribute="leading" id="g29-gf-32R"/>
-                                            </constraints>
                                         </collectionViewCellContentView>
                                         <size key="customSize" width="120" height="120"/>
                                         <connections>
@@ -111,6 +106,7 @@
                         <viewLayoutGuide key="safeArea" id="Ezr-Od-5TC"/>
                     </view>
                     <connections>
+                        <outlet property="collectionViewFlowLayout" destination="52u-iS-sIZ" id="1f6-Ts-i11"/>
                         <outlet property="mapView" destination="hTK-Dg-gGe" id="uYr-Cw-Eq2"/>
                         <outlet property="photosCollectionView" destination="tsd-x5-5ft" id="EMR-Q8-Pxd"/>
                     </connections>

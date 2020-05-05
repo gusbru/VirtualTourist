@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreData
 
-class PhotoAlbumViewController: UIViewController {
+class PhotoAlbumViewController: UIViewController, UICollectionViewDelegateFlowLayout {
     
     private let reuseIdentifier = "Cell"
     var pinAnnotation: MKAnnotation?
@@ -21,6 +21,7 @@ class PhotoAlbumViewController: UIViewController {
     
     
     @IBOutlet weak var photosCollectionView: UICollectionView!
+    @IBOutlet weak var collectionViewFlowLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var mapView: MKMapView!
     
     
@@ -29,8 +30,6 @@ class PhotoAlbumViewController: UIViewController {
 
         setupDelegate()
         setupToolBar()
-        
-        
         
     }
     
@@ -57,6 +56,16 @@ class PhotoAlbumViewController: UIViewController {
         
         
         getImages()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        let space:CGFloat = 3.0
+        let dimension = (view.frame.size.width - (2 * space)) / 3.0
+        collectionViewFlowLayout.minimumInteritemSpacing = space
+        collectionViewFlowLayout.minimumLineSpacing = space
+        
+        return CGSize(width: dimension, height: dimension)
     }
     
     fileprivate func downloadImage(url: URL) {
@@ -130,6 +139,7 @@ class PhotoAlbumViewController: UIViewController {
         mapView.delegate = self
         
         photosCollectionView.dataSource = self
+        
     }
     
     fileprivate func setupToolBar() {
@@ -210,7 +220,7 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
         
         if let data = fetchResultsController.object(at: indexPath).imageSrc {
             cell.photoImageView.image = UIImage(data: data)
-//            cell.setNeedsLayout()
+            cell.setNeedsLayout()
         }
     
         return cell
